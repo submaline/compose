@@ -1,0 +1,51 @@
+version: "3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 auth supervisor user talk operation
+    
+  auth:
+    container_name: auth
+    image: x0y14/submaline-auth-service
+    networks:
+      - internal
+    ports:
+      - ${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}
+  
+  supervisor:
+    container_name: supervisor
+    image: x0y14/submaline-supervisor-service
+    networks:
+      - internal
+    ports:
+      - ${SUPERVISOR_SERVICE_PORT}:${SUPERVISOR_SERVICE_PORT}
+  
+  user:
+    container_name: user
+    image: x0y14/submaline-user-service
+    networks:
+      - internal
+    ports:
+      - ${USER_SERVICE_PORT}:${USER_SERVICE_PORT}
+  
+  talk:
+    container_name: talk
+    image: x0y14/submaline-talk-service
+    networks:
+      - internal
+    ports:
+      - ${TALK_SERVICE_PORT}:${TALK_SERVICE_PORT}
+  
+  operation:
+    container_name: operation
+    image: x0y14/submaline-operation-service
+    networks:
+      - internal
+    ports:
+      - ${OPERATION_SERVICE_PORT}:${OPERATION_SERVICE_PORT}
+
+networks:
+  internal:
