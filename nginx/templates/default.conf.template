@@ -1,0 +1,59 @@
+# auth-service
+server {
+    server_name ${NGINX_AUTH_SERVICE_SERVER_NAME};
+    listen ${NGINX_PORT};
+
+    access_log logs/auth/access.log main;
+
+    location / {
+        grpc_pass grpc://auth:${NGINX_AUTH_SERVICE_PORT};
+    }
+}
+
+# supervisor-service
+server {
+    server_name ${NGINX_SUPERVISOR_SERVICE_SERVER_NAME};
+    listen ${NGINX_PORT};
+
+    access_log logs/supervisor/access.log main;
+
+    location / {
+        grpc_pass grpc://supervisor:${NGINX_SUPERVISOR_SERVICE_PORT};
+    }
+}
+
+# user-service
+server {
+    server_name ${NGINX_USER_SERVICE_SERVER_NAME};
+    listen ${NGINX_PORT};
+
+    access_log logs/user/access.log main;
+
+    location / {
+        grpc_pass grpc://user:${NGINX_USER_SERVICE_PORT};
+    }
+}
+
+# talk-service
+server {
+    server_name ${NGINX_TALK_SERVICE_SERVER_NAME};
+    listen ${NGINX_PORT};
+
+    access_log logs/talk/access.log main;
+
+    location / {
+        grpc_pass grpc://talk:${NGINX_TALK_SERVICE_PORT};
+    }
+}
+
+# operation-service
+server {
+    server_name ${NGINX_OPERATION_SERVICE_SERVER_NAME};
+    listen ${NGINX_PORT};
+
+    access_log logs/operation/access.log main;
+
+    location / {
+        grpc_pass grpc://operation:${NGINX_OPERATION_SERVICE_PORT};
+    }
+}

@@ -1,0 +1,76 @@
+version: "3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 auth supervisor user talk operation
+    
+  # nginx (reverse proxy)
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      - type: bind
+        source: ./nginx/templates
+        target: /etc/nginx/templates
+        read_only: false
+      - type: bind
+        source: ./nginx/logs
+        target: /etc/nginx/logs
+        read_only: false
+    environment:
+      - NGINX_PORT=${PORT}
+      # 
+      - NGINX_AUTH_SERVICE_SERVER_NAME=${AUTH_SERVICE_SERVER_NAME}
+      - NGINX_AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
+      # 
+      - NGINX_SUPERVISOR_SERVICE_SERVER_NAME=${SUPERVISOR_SERVICE_SERVER_NAME}
+      - NGINX_SUPERVISOR_SERVICE_PORT=${SUPERVISOR_SERVICE_PORT}
+      # 
+      - NGINX_USER_SERVICE_SERVER_NAME=${USER_SERVICE_SERVER_NAME}
+      - NGINX_USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      #
+      - NGINX_TALK_SERVICE_SERVER_NAME=${TALK_SERVICE_SERVER_NAME}
+      - NGINX_TALK_SERVICE_PORT=${TALK_SERVICE_PORT}
+      # 
+      - NGINX_OPERATION_SERVICE_SERVER_NAME=${OPERATION_SERVICE_SERVER_NAME}
+      - NGINX_OPERATION_SERVICE_PORT=${OPERATION_SERVICE_PORT}
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - internal
+
+  auth:
+    container_name: auth
+    image: x0y14/submaline-auth-service
+    networks:
+      - internal
+  
+  supervisor:
+    container_name: supervisor
+    image: x0y14/submaline-supervisor-service
+    networks:
+      - internal
+  
+  user:
+    container_name: user
+    image: x0y14/submaline-user-service
+    networks:
+      - internal
+  
+  talk:
+    container_name: talk
+    image: x0y14/submaline-talk-service
+    networks:
+      - internal
+  
+  operation:
+    container_name: operation
+    image: x0y14/submaline-operation-service
+    networks:
+      - internal
+
+networks:
+  internal:
