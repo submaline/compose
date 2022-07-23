@@ -5,7 +5,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30 auth supervisor user talk operation
+    command: --interval 10 auth supervisor user talk operation
     
   auth:
     container_name: auth
